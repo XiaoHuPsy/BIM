@@ -33,7 +33,7 @@ function [params,logL,w]=fit_bim(observed_data,padding)
 % * logL
 % Log likelihood of the data fit.
 % 
-% w
+% * w
 % w = 1 when any warning message is output. w = 0 when there is no warning
 % message.
 
