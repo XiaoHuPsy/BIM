@@ -1,4 +1,11 @@
-function err = bim_error(params,observed_data)
+function err = bim_error_padding(params,observed_data)
+% err = bim_error_padding(params,observed_data)
+% 
+% The error function for BIM applied to recall tasks with continuous
+% confidence (with padding correction).
+% 
+% % Please do not run this function directly. Instead, use the function fit_bim.
+
 %% get data and parameters
 % parameters
 Pexp = params(1);
@@ -79,3 +86,34 @@ grid_loglik = npdf.* normpdf(conf_new/100,normcdf(X1.*a+b),0.025).*(rec_new.*lik
 loglik = log(sum(grid_loglik,2));
 
 err = (-1)*sum(loglik); % sum of negative log likelihood
+
+%% calculate log likelihood for padding trial
+
+conf_padding = [conf;conf];
+rec_padding = [zeros(ntrial,1);ones(ntrial,1)];
+
+ntrial_padding = length(conf_padding);
+
+X1 = lb_x1:rx1:ub_x1;
+X1_padding = repmat(X1,[ntrial_padding,1]);
+npdf=rx1.*normpdf(X1_padding);
+
+lik_rec = (1-normcdf(-mu_m,rho*X1_padding,sqrt(1-rho^2)));
+
+conf_padding_new = repmat(conf_padding,[1,count]);
+rec_padding_new = repmat(rec_padding,[1,count]);
+
+grid_loglik_paddding = npdf.* normpdf(conf_padding_new/100,normcdf(X1_padding.*a+b),0.025).*(rec_padding_new.*lik_rec+(1-rec_padding_new).*(1-lik_rec));
+
+loglik_padding = log(sum(grid_loglik_paddding,2));
+
+% Correct the log likelihood based on memory performance. Estimation of rho
+% is more likely to be inaccurate when performance is more extreme (i.e.,
+% more close to 0 or 1) and a larger correction is added
+err_padding = (-1)*sum(loglik_padding)/ntrial_padding*abs(mean(rec)-0.5);
+
+err = err + err_padding;
+
+
+
+
