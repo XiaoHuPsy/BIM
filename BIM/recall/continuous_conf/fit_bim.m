@@ -1,11 +1,41 @@
 function [params,logL,w]=fit_bim(observed_data,padding)
-
+% [params,logL,w]=fit_bim(observed_data,padding)
+% 
+% Fit BIM to data from recall tasks with continuous confidence ratings on a
+% percentage scale (i.e., a 0-100 continuous scale).
+% 
+% INPUTS
+%
+% * observed_data
+% N-by-2 matrix containing data of confidence ratings and recall
+% performance.N represents the total number of trials, and each row
+% represents a trial.The first column is confidence rating and the second
+% column is recall performance in each trial.
+% 
+% Confidence ratings should be on a continuous scale from 0 (not confident
+% at all) to 100 (completely confident). Recall performance should be 0
+% (incorrect) or 1 (correct).
+% 
 % * padding
 % Add a small correction to data during model fitting when padding = 1.
+% There is no padding correction when padding = 0. Default value is 0.
 % 
-% We ONLY recommend setting padding = 1 when the estimated rho is at edge
-% (i.e., > 0.98 or < -0.98). This can slightly improve the performance of
-% parameter recovery.
+% We ONLY recommend setting padding = 1 when the fitted value of rho is
+% at edge (i.e., > 0.98 or < -0.98) with padding = 0. This can slightly
+% improve the performance of parameter recovery.
+% 
+% OUTPUTS
+% 
+% * params
+% A vector containing fitted value of the parameters in BIM (from left to
+% right: Pexp, Mconf, mu_m and rho)
+% 
+% * logL
+% Log likelihood of the data fit.
+% 
+% w
+% w = 1 when any warning message is output. w = 0 when there is no warning
+% message.
 
 tic;
 
@@ -75,7 +105,7 @@ if padding == 0
     end
 end
 
-%% generate output
+%% generate log likelihood
 err = bim_error(params,observed_data);
 logL = -err;
 
