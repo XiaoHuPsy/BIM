@@ -75,7 +75,7 @@ X0 = repmat(X0,[ntrial,1]);
 npdf=rx0.*normpdf(X0);
 
 
-%% calculate log likelihood and prediction for each trial
+%% calculate log likelihood for each trial
 
 lik_rec = (1-normcdf(-mu_m,rho*X0,sqrt(1-rho^2)));
 

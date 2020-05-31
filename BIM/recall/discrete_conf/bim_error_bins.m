@@ -7,13 +7,13 @@ function [err,predicted] = bim_error_bins(params, nC, nI)
 % Please do not run this function directly. Instead, use the function
 % fit_bim_bins.
 
-% get parameters
+%% get parameters
 Pexp = params(1);
 Mconf = params(2);
 mu_m = params(3);
 rho = params(4);
 
-% set bound for parameters
+%% set bound for parameters
 if rho < -0.99
     err=100000;
     return
@@ -46,20 +46,20 @@ elseif mu_m > 5
     return 
 end
 
-% parameter transform
+%% parameter transform
 sigmal = sqrt(1/Pexp-1);
 wavg = norminv(Mconf)*sqrt(1+sigmal^2+1/(sigmal^2));
 
 a = 1 / (sigmal * sqrt(1+sigmal^2));
 b = wavg / sqrt(1+sigmal^2);
 
-% calculate confidence criteria
+%% calculate confidence criteria
 nratings = length(nC);
 conf_criteria = linspace(1/nratings,1-1/nratings,nratings-1);
 
 x0_criteria = (norminv(conf_criteria)-b)/a;
 
-% calculate probability for each confidence category
+%% calculate probability for each confidence category
 pr_C = zeros(1,nratings);
 pr_I = zeros(1,nratings);
 
@@ -93,6 +93,6 @@ pr_I(pr_I<=0) = 1e-50;
 
 predicted = [pr_C' pr_I'];
 
-% calculate log likelihood
+%% calculate log likelihood
 logL = sum(nC.*log(pr_C)) + sum(nI.*log(pr_I));
 err = -logL;
