@@ -1,5 +1,4 @@
 function [params,logL,w,d,C] = fit_bim_recog(observed_data)
-
 % [params,logL,w,d,C] = fit_bim_recog(observed_data)
 %
 % Fit BIM to data from recognition tasks with continuous confidence ratings
