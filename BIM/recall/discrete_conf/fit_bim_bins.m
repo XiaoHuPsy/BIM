@@ -1,5 +1,5 @@
-function [params,logL,predicted,w]=fit_bim_bins(nC,nI,padding)
-% [params,logL,predicted,w]=fit_bim_bins(nC,nI,padding)
+function [params,logL,predicted,w] = fit_bim_bins(nC,nI,padding)
+% [params,logL,predicted,w] = fit_bim_bins(nC,nI,padding)
 % 
 % Fit BIM to data from recall tasks with confidence ratings on a discrete
 % scale.
