@@ -1,7 +1,9 @@
 % parameter recovery analysis for BIM applied to recognition tasks with
-% continuous confidence
+% discrete confidence
 
 clear;
+
+nratings = 7; % total available level of confidence ratings
 
 % set random seed
 ctime = datestr(now, 30);
@@ -28,7 +30,7 @@ range_C = [-1 1];
 
 params = zeros(sampleNum,8); % true value of parameters
 fit_params = zeros(sampleNum,8); % fitted parameters
-data = zeros(ntrial,3,sampleNum); % the whole simulation dataset
+data_nR = cell(sampleNum,2); % the whole simulation dataset
 
 % replace for loop with parfor loop when using parallel computation
 for i = 1:sampleNum
@@ -47,12 +49,15 @@ for i = 1:sampleNum
     params(i,:) = [Pexp Mconf1 Mconf2 Mconf3 Mconf4 rho d C];
     
     % generate data
-    observed_data = BIM_simulation_recog(Pexp,Mconf1,Mconf2,Mconf3,Mconf4,rho,d,C,ntrial);
+    [~,predicted] = bim_error_bins_recog([Pexp Mconf1 Mconf2 Mconf3 Mconf4 rho],zeros(1,nratings*2),zeros(1,nratings*2),d,C);
     
-    data(:,:,i) = observed_data;
+    nR_S1 = mnrnd(ntrial/2,predicted.S1);
+    nR_S2 = mnrnd(ntrial/2,predicted.S2);
+    
+    data_nR(i,:) = [{nR_S1} {nR_S2}];
     
     % model fitting
-    [temp1,~,~,d,C] = fit_bim_recog(observed_data);
+    [temp1,~,~,~,d,C]=fit_bim_bins_recog(nR_S1,nR_S2);
     
     fit_params(i,:) = [temp1 d C];
     
