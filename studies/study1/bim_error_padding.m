@@ -1,4 +1,11 @@
 function err = bim_error_padding(params,observed_data)
+% err = bim_error_padding(params,observed_data)
+% 
+% The error function for BIM applied to recall tasks with continuous
+% confidence (with padding correction).
+% 
+% % Please do not run this function directly. Instead, use the function fit_bim.
+
 %% get data and parameters
 % parameters
 Pexp = params(1);
@@ -53,29 +60,29 @@ wavg = norminv(Mconf)*sqrt(1+sigmal^2+1/(sigmal^2));
 a = 1/(sigmal*sqrt(sigmal^2+1));
 b = wavg/sqrt(sigmal^2+1);
 
-%% create grid for x1
+%% create grid for x0
 count=100;  % steps in grid
-lb_x1 = -5; % lower bound for x1
-ub_x1 = 5; % upper bound for x1
+lb_x0 = -5; % lower bound for x0
+ub_x0 = 5; % upper bound for x0
 
-rx1 = (ub_x1-lb_x1)./(count-1);
+rx0 = (ub_x0-lb_x0)./(count-1);
 
-X1 = lb_x1:rx1:ub_x1;
+X0 = lb_x0:rx0:ub_x0;
 
-X1 = repmat(X1,[ntrial,1]);
+X0 = repmat(X0,[ntrial,1]);
 
 %% calculate normal pdf for grid
-npdf=rx1.*normpdf(X1);
+npdf=rx0.*normpdf(X0);
 
 
-%% calculate log likelihood and prediction for each trial
+%% calculate log likelihood for each trial
 
-lik_rec = (1-normcdf(-mu_m,rho*X1,sqrt(1-rho^2)));
+lik_rec = (1-normcdf(-mu_m,rho*X0,sqrt(1-rho^2)));
 
 conf_new = repmat(conf,[1,count]);
 rec_new = repmat(rec,[1,count]);
     
-grid_loglik = npdf.* normpdf(conf_new/100,normcdf(X1.*a+b),0.025).*(rec_new.*lik_rec+(1-rec_new).*(1-lik_rec));
+grid_loglik = npdf.* normpdf(conf_new/100,normcdf(X0.*a+b),0.025).*(rec_new.*lik_rec+(1-rec_new).*(1-lik_rec));
 loglik = log(sum(grid_loglik,2));
 
 err = (-1)*sum(loglik); % sum of negative log likelihood
@@ -87,16 +94,16 @@ rec_padding = [zeros(ntrial,1);ones(ntrial,1)];
 
 ntrial_padding = length(conf_padding);
 
-X1 = lb_x1:rx1:ub_x1;
-X1_padding = repmat(X1,[ntrial_padding,1]);
-npdf=rx1.*normpdf(X1_padding);
+X0 = lb_x0:rx0:ub_x0;
+X0_padding = repmat(X0,[ntrial_padding,1]);
+npdf=rx0.*normpdf(X0_padding);
 
-lik_rec = (1-normcdf(-mu_m,rho*X1_padding,sqrt(1-rho^2)));
+lik_rec = (1-normcdf(-mu_m,rho*X0_padding,sqrt(1-rho^2)));
 
 conf_padding_new = repmat(conf_padding,[1,count]);
 rec_padding_new = repmat(rec_padding,[1,count]);
 
-grid_loglik_paddding = npdf.* normpdf(conf_padding_new/100,normcdf(X1_padding.*a+b),0.025).*(rec_padding_new.*lik_rec+(1-rec_padding_new).*(1-lik_rec));
+grid_loglik_paddding = npdf.* normpdf(conf_padding_new/100,normcdf(X0_padding.*a+b),0.025).*(rec_padding_new.*lik_rec+(1-rec_padding_new).*(1-lik_rec));
 
 loglik_padding = log(sum(grid_loglik_paddding,2));
 
