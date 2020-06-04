@@ -16,3 +16,5 @@ The folder **BIM** contains the core functions of BIM, which can be fitted to da
 The folder **simulation** contains the scripts for the data simulation and analyses described in the section "Data Simulation and Parameter Recovery" of our paper.
 
 The folder **studies** contains the raw data and scripts for data analyses in Studies 1-4.
+
+The folder **extended** contains the scripts for simulating data from the extended BIM.
