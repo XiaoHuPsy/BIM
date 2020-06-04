@@ -14,3 +14,5 @@ The folder **BIM** contains the core functions of BIM, which can be fitted to da
 - Run *fit_bim_bins_recog.m* for data from recognition tasks with discrete confidence ratings (on a scale with no less than 3 points).
 
 The folder **simulation** contains the scripts for the data simulation and analyses described in the section "Data Simulation and Parameter Recovery" of our paper.
+
+The folder **studies** contains the raw data and scripts for data analyses in Studies 1-4.
